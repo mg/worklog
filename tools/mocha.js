@@ -1,6 +1,7 @@
 var jsdom = require('jsdom')
 var chai = require('chai')
 var sinon= require('sinon-chai')
+var immutable = require('chai-immutable')
 
 require('babel/register')({
   babelrc: '../.babelrc',
@@ -31,3 +32,4 @@ Object.keys(window).forEach(function(key) {
 })
 
 chai.use(sinon)
+chai.use(immutable)

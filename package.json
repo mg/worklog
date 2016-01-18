@@ -28,6 +28,7 @@
     "babel-plugin-rewire": "^0.1.22",
     "babel-runtime": "^5.8.24",
     "chai": "^3.4.1",
+    "chai-immutable": "^1.5.3",
     "del": "^2.2.0",
     "eslint": "^1.10.3",
     "express": "^4.13.3",
