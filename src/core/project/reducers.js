@@ -1,4 +1,4 @@
-import { List, Map } from 'immutable'
+import { List, Map, fromJS } from 'immutable'
 
 /*
   project= {
@@ -10,20 +10,81 @@ import { List, Map } from 'immutable'
   }
 */
 
+function setInitializing(obj, init) {
+  if(init) return obj.updateIn(['state', 'initializing'], val => init)
+  return obj.updateIn(['state'], state => state.delete('initializing'))
+}
+
+function setEditing(obj, editing) {
+  if(editing) return obj.updateIn(['state', 'isEditing'], val => editing)
+  return obj.updateIn(['state'], state => state.delete('isEditing'))
+}
+
+function setCreating(obj, creating) {
+  if(creating) {
+    return obj
+      .updateIn(['state', 'isCreating'], val => creating)
+      .updateIn(['state'], state => state.delete('initializing'))
+  }
+  return obj.updateIn(['state'], state => state.delete('isCreating'))
+}
+
+function setSaving(obj, saving) {
+  if(saving) return obj.updateIn(['state', 'isSaving'], val => saving)
+  return obj.updateIn(['state'], state => state.delete('isSaving'))
+}
+
+function setRemoving(obj, removing) {
+  if(removing) return obj.updateIn(['state', 'isRemoving'], val => removing)
+  return obj.updateIn(['state'], state => state.delete('isRemoving'))
+}
+
 const initialState= Map({
   projects: List([]),
 })
 
-const initialize= (state) => {
-  return state.set(
-    'new', Map({})
-  )
+const loadItems= (state, items) => {
+  return state
+    .set(
+      'projects',
+      fromJS(
+        items.map(item => { return {item: item, state: Map({})}})
+      )
+    )
+    .set('change', Map({}))
 }
 
-const creating= (state, name) => {
-  return state.updateIn(
-    ['new'], project => project.set('name', name)
-  )
+const cancel= (state, op) => {
+  let change= state.get('change')
+  if(change === undefined)
+    return state
+
+  let idx= change.get(op)
+  if(idx === undefined) return state
+
+  change= change.delete(op)
+  switch(op) {
+    case 'initialize':
+      return state.updaateIn(['projects'], projects => projects.delete(idx))
+    case 'editing':
+      return state.updaateIn(['projects', idx], project => setEditing(project, false))
+  }
+}
+
+const initialize= (state) => {
+  state= cancel(state, 'initialize')
+  const item= fromJS({ item: {}})
+  return state
+    .updateIn(['projects'], projects => projects.push(setInitializing(item, true)))
+    .setIn(['change', 'initialize'], state.get('projects').size)
+}
+
+const creating= (state, project) => {
+  const idx= state.get('change').get('initialize')
+  return state
+    .updateIn(['projects', idx], old => setCreating(old.set('item', Map(project)), true))
+    .deleteIn(['change', 'initialize'])
+    .setIn(['change', 'creating'], idx)
 }
 
 const created= (state, project) => {
@@ -35,6 +96,7 @@ const created= (state, project) => {
 }
 
 const edit= (state, project) => {
+  state= cancel(state, 'edit')
   return state.set(
     'edit', Map({
       index: state.get('projects').indexOf(project),
@@ -61,6 +123,8 @@ const saved= (state) => {
 
 const reducer= (state= initialState, action) => {
   switch (action.type) {
+  case 'LOAD_ITEMS_PROJECT':
+    return loadItems(state, action.payload)
   case 'INITIALIZE_PROJECT':
     return initalize(state)
   case 'CREATING_PROJECT':
@@ -78,4 +142,4 @@ const reducer= (state= initialState, action) => {
 }
 
 export default reducer
-export { initialize, creating, created, edit, saving, saved }
+export { loadItems, initialize, creating, created, edit, saving, saved }

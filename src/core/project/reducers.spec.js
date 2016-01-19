@@ -1,21 +1,56 @@
 import { expect } from 'chai'
 import { Map, fromJS } from 'immutable'
 
-import { initialize, creating, created, edit, saving, saved } from './reducers.js'
+import { loadItems, initialize, creating, created, edit, saving, saved } from './reducers.js'
 
 describe('project/reducers ->', () => {
-  it('initializes an empty project', () => {
+  it('initializes state from a list of items', () => {
+    const item= {name: 'NAME'}
     const before= fromJS({})
-    const after= fromJS({new: {}})
+    const after= fromJS({
+      projects: [
+        {item, state: {}},
+        {item, state: {}},
+        {item, state: {}}
+      ],
+      change: {}
+    })
+
+    expect(loadItems(before, [item, item, item])).to.equal(after)
+  })
+
+  it('initializes an empty project', () => {
+    const before= fromJS({
+      projects: [],
+      change: {}
+    })
+    const after= fromJS({
+      projects: [{item: {}, state: {initializing: true}}],
+      change: {initialize: 0}
+    })
 
     expect(initialize(before)).to.equal(after)
   })
 
-  it('stores name when creating', () => {
-    const before= fromJS({new: {}})
-    const after= fromJS({new: {name: 'NAME'}})
+  it('stores item when creating', () => {
+    const before= fromJS({
+      projects: [
+        {item: {}, state: {initializing: true}}
+      ],
+      change: {
+        initialize: 0,
+      }
+    })
+    const after= fromJS({
+      projects: [
+        {item: {name: 'NAME'}, state: {isCreating: true}}
+      ],
+      change: {
+        creating: 0,
+      }
+    })
 
-    expect(creating(before, 'NAME')).to.equal(after)
+    expect(creating(before, {name: 'NAME'})).to.equal(after)
   })
 
   it('stores new project after it is created, deletes project placeholder', () => {
