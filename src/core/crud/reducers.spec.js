@@ -3,12 +3,12 @@ import { Map, fromJS } from 'immutable'
 
 import { loadItems, initialize, creating, created, edit, saving, saved, removing, removed } from './reducers.js'
 
-describe('project/reducers ->', () => {
+describe('crud/reducers ->', () => {
   it('initializes state from a list of items', () => {
     const item= {name: 'NAME'}
     const before= fromJS({})
     const after= fromJS({
-      projects: [
+      items: [
         {item},
         {item},
         {item},
@@ -21,11 +21,11 @@ describe('project/reducers ->', () => {
 
   it('initializes an empty project', () => {
     const before= fromJS({
-      projects: [],
+      items: [],
       change: {}
     })
     const after= fromJS({
-      projects: [{item: {}, state: {initializing: true}}],
+      items: [{item: {}, state: {initializing: true}}],
       change: {initialize: 0}
     })
 
@@ -34,7 +34,7 @@ describe('project/reducers ->', () => {
 
   it('stores item when creating', () => {
     const before= fromJS({
-      projects: [
+      items: [
         {item: {}, state: {initializing: true}}
       ],
       change: {
@@ -42,7 +42,7 @@ describe('project/reducers ->', () => {
       }
     })
     const after= fromJS({
-      projects: [
+      items: [
         {item: {name: 'NAME'}, state: {isCreating: true}}
       ],
       change: {
@@ -55,7 +55,7 @@ describe('project/reducers ->', () => {
 
   it('stores new project after it is created, deletes project placeholder', () => {
     const before= fromJS({
-      projects: [
+      items: [
         {item: {name: 'NAME'}, state: {isCreating: true}}
       ],
       change: {
@@ -63,7 +63,7 @@ describe('project/reducers ->', () => {
       }
     })
     const after= fromJS({
-      projects: [
+      items: [
         {item: {name: 'NAME', value: 1}}
       ],
       change: {
@@ -76,11 +76,11 @@ describe('project/reducers ->', () => {
   it('sets state up for editing a project', () => {
     const project= fromJS({name: 'NAME'})
     const before= fromJS({
-      projects: [{item: project}],
+      items: [{item: project}],
       change: {}
     })
     const after= fromJS({
-      projects: [{item: project, state: {isEditing: true}}],
+      items: [{item: project, state: {isEditing: true}}],
       change: {editing: 0}
     })
 
@@ -90,11 +90,11 @@ describe('project/reducers ->', () => {
   it('marks project as being saved', () => {
     const project= fromJS({name: 'NAME'})
     const before= fromJS({
-      projects: [{item: {name: 'NAME'}, state: {isEditing: true}}],
+      items: [{item: {name: 'NAME'}, state: {isEditing: true}}],
       change: {editing: 0}
     })
     const after= fromJS({
-      projects: [{item: {name: 'NAME', value: 1}, state: {isSaving: true}}],
+      items: [{item: {name: 'NAME', value: 1}, state: {isSaving: true}}],
       change: {saving: 0}
     })
 
@@ -103,11 +103,11 @@ describe('project/reducers ->', () => {
 
   it('saved changes', () => {
     const before= fromJS({
-      projects: [{item: {name: 'NAME'}, state: {isSaving: true}}],
+      items: [{item: {name: 'NAME'}, state: {isSaving: true}}],
       change: {saving: 0}
     })
     const after= fromJS({
-      projects: [{item: {name: 'NAME', value: 1}}],
+      items: [{item: {name: 'NAME', value: 1}}],
       change: {}
     })
 
@@ -117,11 +117,11 @@ describe('project/reducers ->', () => {
   it('marks as being removed', () => {
     const project= fromJS({name: 'NAME'})
     const before= fromJS({
-      projects: [{item: project}],
+      items: [{item: project}],
       change: {}
     })
     const after= fromJS({
-      projects: [{item: project, state: {isRemoving: true}}],
+      items: [{item: project, state: {isRemoving: true}}],
       change: {removing: 0}
     })
 
@@ -130,11 +130,11 @@ describe('project/reducers ->', () => {
 
   it('removes item', () => {
     const before= fromJS({
-      projects: [{item: {name: 'NAME'}, state: {isRemoving: true}}],
+      items: [{item: {name: 'NAME'}, state: {isRemoving: true}}],
       change: {removing: 0}
     })
     const after= fromJS({
-      projects: [],
+      items: [],
       change: {}
     })
 

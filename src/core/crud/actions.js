@@ -1,4 +1,4 @@
-export default function(name, ) {
+export default function(name) {
   const action= (prefix, payload) => {
     return {
       type: `${prefix}_${name}`,
