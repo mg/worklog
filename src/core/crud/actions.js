@@ -12,6 +12,7 @@ export default function(name) {
     }
   }
 
+  const loadItems= (payload) => action('LOAD_ITEMS', payload)
   const create= (payload) => action('CREATE', payload)
   const creating= (payload) => action('CREATING', payload)
   const created= (payload) => action('CREATED', payload)
@@ -24,7 +25,7 @@ export default function(name) {
   const removed= (payload) => action('REMOVED', payload)
 
   return {
-    initialize,
+    loadItems, initialize,
     create, creating, created,
     edit,
     save, saving, saved,
