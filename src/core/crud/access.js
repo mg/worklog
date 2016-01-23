@@ -2,22 +2,22 @@ export function getItem(obj) {
   return obj.get('item')
 }
 
-export function isInitalizing(obj) {
-  return obj.get('state').get('initializing') === true
+export function isInitializing(obj) {
+  return obj.get('isInitializing') === true
 }
 
 export function isEditing(obj) {
-  return obj.get('state').get('isEditing') === true
+  return obj.get('isEditing') === true
 }
 
 export function isCreating(obj) {
-  return obj.get('state').get('isCreating') === true
+  return obj.get('isCreating') === true
 }
 
 export function isSaving(obj) {
-  return obj.get('state').get('isSaving') === true
+  return obj.get('isSaving') === true
 }
 
 export function isRemoving(obj) {
-  return obj.get('state').get('isRemoving') === true
+  return obj.get('isRemoving') === true
 }
