@@ -5,29 +5,35 @@ import { removing, removed } from './reducers-remove.js'
 
 describe('crud/reducers-remove ->', () => {
   it('marks as being removed', () => {
-    const project= fromJS({name: 'NAME'})
+    const item= fromJS({name: 'NAME'})
     const before= fromJS({
-      items: [{item: project}],
-      change: {}
+      'key': {
+        item: item,
+      }
     })
     const after= fromJS({
-      items: [{item: project, isRemoving: true}],
-      change: {removing: 0}
+      'key': {
+        item: item,
+        isRemoving: true,
+      }
     })
 
-    expect(removing(before, project)).to.equal(after)
+    let action= {payload: item}
+    expect(removing(before, action)).to.equal(after)
+    expect(action.key).to.equal('key')
   })
 
   it('removes item', () => {
     const before= fromJS({
-      items: [{item: {name: 'NAME'}, isRemoving: true}, {}],
-      change: {removing: 0}
+      'key': {
+        item: {name: 'NAME'},
+        isRemoving: true,
+      }
     })
     const after= fromJS({
-      items: [{}],
-      change: {}
     })
 
-    expect(removed(before)).to.equal(after)
+    let action= {key: 'key'}
+    expect(removed(before, action)).to.equal(after)
   })
 })

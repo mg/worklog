@@ -1,21 +1,21 @@
 import { expect } from 'chai'
 import { fromJS } from 'immutable'
 
+import { compare } from './reducers-testutils.js'
 import { loadItems } from './reducers.js'
 
 describe('crud/reducers ->', () => {
   it('initializes state from a list of items', () => {
-    const item= {name: 'NAME'}
     const before= fromJS({})
-    const after= fromJS({
-      items: [
-        {item},
-        {item},
-        {item},
-      ],
-      change: {}
-    })
+    const after= fromJS([
+      {item: {name: 'NAME1'}},
+      {item: {name: 'NAME2'}},
+      {item: {name: 'NAME3'}},
+    ])
 
-    expect(loadItems(before, [item, item, item])).to.equal(after)
+    compare(
+      loadItems(before, [{name: 'NAME1'}, {name: 'NAME2'}, {name: 'NAME3'}]),
+      after
+    )
   })
 })

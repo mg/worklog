@@ -1,31 +1,31 @@
 import { fromJS } from 'immutable'
+import { isInitializing } from './access.js'
 import { setInitializing, setCreating } from './itemstate.js'
-import { cancel } from './reducers-common.js'
+import { timer, cancel } from './reducers-common.js'
 
-export const initialize= (state) => {
-  state= cancel(state, 'initialize')
-  const item= fromJS({ item: {}})
-
+export const initialize= (state, action) => {
+  let item= state.find(item => isInitializing(item))
+  if(item === undefined) {
+    item= setInitializing(fromJS({item: {}}), true)
+    const key= timer()
+    state= state.set(key, item)
+    action.key= key
+  }
   return state
-    .updateIn(['items'], items => items.push(setInitializing(item, true)))
-    .setIn(['change', 'initialize'], state.get('items').size)
 }
 
-export const creating= (state, item) => {
-  const idx= state.get('change').get('initialize')
-  if(idx === -1) return state
+export const creating= (state, action) => {
+  let item= state.get(action.key)
+  item= setCreating(setInitializing(item, false), true)
+  item= item.set('item', fromJS(action.payload))
 
-  return state
-    .updateIn(['items', idx], inList => setCreating(inList.set('item', fromJS(item)), true))
-    .deleteIn(['change', 'initialize'])
-    .setIn(['change', 'creating'], idx)
+  return state.set(action.key, item)
 }
 
-export const created= (state, item) => {
-  const idx= state.get('change').get('creating')
-  if(idx === -1) return state
+export const created= (state, action) => {
+  let item= state.get(action.key)
+  item= setCreating(setInitializing(item, false), false)
+  item= item.set('item', fromJS(action.payload))
 
-  return state
-    .updateIn(['items', idx], old => {  return fromJS({ item })})
-    .deleteIn(['change', 'creating'])
+  return state.set(action.key, item)
 }

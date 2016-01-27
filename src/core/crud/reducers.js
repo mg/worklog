@@ -1,22 +1,19 @@
-import { List, Map, fromJS } from 'immutable'
+import { OrderedMap, fromJS } from 'immutable'
 
+import { timer } from './reducers-common.js'
 import { initialize, creating, created } from './reducers-create.js'
 import { edit, saving, saved } from './reducers-edit.js'
 import { removing, removed } from './reducers-remove.js'
 
-const initialState= Map({
-  items: List([]),
-})
+const initialState= OrderedMap({})
 
 export const loadItems= (state, items) => {
+  items.forEach(item => {
+    let id= timer()
+    state= state.set(id, fromJS({item}))
+  })
+
   return state
-    .set(
-      'items',
-      fromJS(
-        items.map(item => { return {item: item}})
-      )
-    )
-    .set('change', Map({}))
 }
 
 const reducer= (postfix)=> {
@@ -25,21 +22,21 @@ const reducer= (postfix)=> {
     case `LOAD_ITEMS_${postfix}`:
       return loadItems(state, action.payload)
     case `INITIALIZE_${postfix}`:
-      return initialize(state)
+      return initialize(state, action)
     case `CREATING_${postfix}`:
-      return creating(state, action.payload)
+      return creating(state, action)
     case `CREATED_${postfix}`:
-      return created(state, action.payload)
+      return created(state, action)
     case `EDIT_${postfix}`:
-      return edit(state, action.payload)
+      return edit(state, action)
     case `SAVING_${postfix}`:
-      return saving(state, action.payload)
+      return saving(state, action)
     case `SAVED_${postfix}`:
-      return saved(state, action.payload)
+      return saved(state, action)
     case `REMOVING_${postfix}`:
-      return removing(state, action.payload)
+      return removing(state, action)
     case `REMOVED_${postfix}`:
-      return removed(state)
+      return removed(state, action)
     }
     return state;
   }

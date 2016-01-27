@@ -1,5 +1,11 @@
 import { setEditing, setSaving } from './itemstate.js'
 
+let timer
+if(global.performance !== undefined) timer= globalperformance.now
+else timer= () => parseInt(process.hrtime().join(''))
+
+export { timer }
+
 export const cancel= (state, op) => {
   let change= state.get('change')
   if(change === undefined)

@@ -5,46 +5,56 @@ import { edit, saving, saved } from './reducers-edit.js'
 
 describe('crud/reducers-edit ->', () => {
   it('sets state up for editing a project', () => {
-    const project= fromJS({name: 'NAME'})
+    const item= fromJS({name: 'NAME'})
     const before= fromJS({
-      items: [{item: project}],
-      change: {}
+      'key': {
+        item: item,
+      }
     })
     const after= fromJS({
-      items: [{item: project, isEditing: true}],
-      change: {editing: 0}
-    })
-
-    expect(edit(before, project)).to.equal(after)
-  })
-
-  it('marks project as being saved', () => {
-    const project= fromJS({name: 'NAME'})
-    const before= fromJS({
-      items: [{item: {name: 'NAME'}, isEditing: true}],
-      change: {editing: 0}
-    })
-    const after= fromJS({
-      items: [{item: {name: 'NAME', value: 1}, isSaving: true}],
-      change: {
-        saving: 0,
-        savingCopy: project,
+      'key': {
+        item: item,
+        isEditing: true,
       }
     })
 
-    expect(saving(before, {name: 'NAME', value: 1})).to.equal(after)
+    let action= {payload: item}
+    expect(edit(before, action)).to.equal(after)
+    expect(action.key).to.equal('key')
+  })
+
+  it('marks item as being saved', () => {
+    const before= fromJS({
+      'key': {
+        item: {name: 'NAME'},
+        isEditing: true,
+      }
+    })
+    const after= fromJS({
+      'key': {
+        item: {name: 'NAME', value: 1},
+        isSaving: true,
+      }
+    })
+
+    let action= {key: 'key', payload: {name: 'NAME', value: 1}}
+    expect(saving(before, action)).to.equal(after)
   })
 
   it('saved changes', () => {
     const before= fromJS({
-      items: [{item: {name: 'NAME'}, isSaving: true}],
-      change: {saving: 0}
+      'key': {
+        item: {name: 'NAME', value: 1},
+        isSaving: true,
+      }
     })
     const after= fromJS({
-      items: [{item: {name: 'NAME', value: 1}}],
-      change: {}
+      'key': {
+        item: {name: 'NAME', value: 1, id: '1'}
+      }
     })
 
-    expect(saved(before, {name: 'NAME', value: 1})).to.equal(after)
+    let action= {key: 'key', payload: {name: 'NAME', value: 1, id: '1'}}
+    expect(saved(before, action)).to.equal(after)
   })
 })

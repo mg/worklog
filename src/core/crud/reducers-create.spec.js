@@ -1,60 +1,57 @@
 import { expect } from 'chai'
 import { fromJS } from 'immutable'
 
+import { compare } from './reducers-testutils.js'
 import { initialize, creating, created } from './reducers-create.js'
 
 describe('crud/reducers-create ->', () => {
   it('initializes an empty project', () => {
-    const before= fromJS({
-      items: [],
-      change: {}
-    })
-    const after= fromJS({
-      items: [{item: {}, isInitializing: true}],
-      change: {initialize: 0}
-    })
+    const before= fromJS({})
+    const after= fromJS([
+      {item: {}, isInitializing: true},
+    ])
 
-    expect(initialize(before)).to.equal(after)
+    let action= {}
+    compare(
+      initialize(before, action),
+      after
+    )
+    expect(action.key).to.not.equal(undefined)
   })
 
-  it('stores item when creating', () => {
+  it('marks item as being created, clears isInitalizing, updates with new data', () => {
     const before= fromJS({
-      items: [
-        {item: {}, isInitializing: true}
-      ],
-      change: {
-        initialize: 0,
-      }
+      'key': {
+        item: {},
+        isInitializing: true
+      },
     })
     const after= fromJS({
-      items: [
-        {item: {name: 'NAME'}, isCreating: true}
-      ],
-      change: {
-        creating: 0,
-      }
+      'key': {
+        item: {name: 'NAME'},
+        isCreating: true
+      },
     })
 
-    expect(creating(before, {name: 'NAME'})).to.equal(after)
+    expect(creating(before, {payload: {name: 'NAME'}, key: 'key'})).to.equal(after)
   })
 
-  it('stores new project after it is created, deletes project placeholder', () => {
+  it('updates item with new data, clears isCreating flag', () => {
     const before= fromJS({
-      items: [
-        {item: {name: 'NAME'}, isCreating: true}
-      ],
-      change: {
-        creating: 0,
-      }
+      'key': {
+        item: {name: 'NAME'},
+        isCreating: true,
+      },
     })
     const after= fromJS({
-      items: [
-        {item: {name: 'NAME', value: 1}}
-      ],
-      change: {
-      }
+      'key': {
+        item: {
+          name: 'NAME',
+          value: 1
+        },
+      },
     })
 
-    expect(created(before, {name: 'NAME', value: 1})).to.equal(after)
+    expect(created(before, {payload: {name: 'NAME', value: 1}, key: 'key'})).to.equal(after)
   })
 })
