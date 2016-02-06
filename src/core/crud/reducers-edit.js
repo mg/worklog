@@ -1,6 +1,6 @@
 import { fromJS } from 'immutable'
 import { isInitializing } from './access.js'
-import { setEditing, setSaving } from './itemstate.js'
+import { setEditing, setSaving, setError } from './itemstate.js'
 import { cancel } from './reducers-common.js'
 
 export const edit= (state, action) => {
@@ -54,10 +54,14 @@ export const saving= (state, action) => {
 }
 
 export const saved= (state, action) => {
-  return state.set(
-    action.key,
-    fromJS({item: action.payload}),
-  )
+  let item= state.get(action.key)
+  if(action.isError) {
+    item= setError(item, true, action.description)
+  } else {
+    item= setSaving(item, false)
+    item= item.set('item', fromJS(action.payload))
+  }
+  return state.set(action.key, item)
   /*const idx= state.get('change').get('saving')
 
   return state

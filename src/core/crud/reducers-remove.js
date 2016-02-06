@@ -1,6 +1,5 @@
 import { fromJS } from 'immutable'
-import { setRemoving } from './itemstate.js'
-import { cancel } from './reducers-common.js'
+import { setRemoving, setError } from './itemstate.js'
 
 export const removing= (state, action) => {
   let entry= state.findEntry(item => item.get('item') === action.payload)
@@ -37,7 +36,13 @@ export const removing= (state, action) => {
 
 export const removed= (state, action) => {
   if(state.has(action.key)) {
-    return state.delete(action.key)
+    let item= state.get(action.key)
+    if(action.isError) {
+      item= setError(item, true, action.description)
+      return state.set(action.key, item)
+    } else {
+      return state.delete(action.key)
+    }
   }
   return state
 /*  const idx= state.get('change').get('removing')

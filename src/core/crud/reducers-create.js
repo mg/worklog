@@ -1,6 +1,6 @@
 import { fromJS } from 'immutable'
 import { isInitializing } from './access.js'
-import { setInitializing, setCreating } from './itemstate.js'
+import { setInitializing, setCreating, setError } from './itemstate.js'
 import { timer, cancel } from './reducers-common.js'
 
 export const initialize= (state, action) => {
@@ -24,8 +24,12 @@ export const creating= (state, action) => {
 
 export const created= (state, action) => {
   let item= state.get(action.key)
-  item= setCreating(setInitializing(item, false), false)
-  item= item.set('item', fromJS(action.payload))
 
+  if(action.isError) {
+    item= setError(item, true, action.description)
+  } else {
+    item= setCreating(setInitializing(item, false), false)
+    item= item.set('item', fromJS(action.payload))
+  }
   return state.set(action.key, item)
 }
