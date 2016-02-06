@@ -1,3 +1,4 @@
-import actions from './actions.js'
+import actionsFactory from './actions.js'
+import reducerFactory from './reducers.js'
 
-export default { actions }
+export default { actionsFactory, reducerFactory }
