@@ -58,6 +58,9 @@ export const saved= (state, action) => {
   if(action.isError) {
     item= setError(item, true, action.description)
   } else {
+    if(item === undefined) {
+      item= fromJS({})
+    }
     item= setSaving(item, false)
     item= item.set('item', fromJS(action.payload))
   }
