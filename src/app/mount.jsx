@@ -1,12 +1,11 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { Router } from 'react-router'
 
-import routes from 'app/routes.jsx'
+import App from './app'
 
 export default function Mount(history, dom) {
   render(
-    <Router history={history} routes={routes} />,
+    <App history={history}/>,
     document.getElementById(dom)
   )
 }
