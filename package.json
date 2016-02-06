@@ -40,7 +40,6 @@
     "gulp-spawn-mocha": "^2.2.1",
     "gulp-util": "^3.0.7",
     "gulp-watch": "^4.3.5",
-    "history": "^1.13.1",
     "jsdom": "^7.1.1",
     "json-loader": "^0.5.4",
     "mocha": "^2.3.4",
@@ -57,9 +56,11 @@
     "webpack-hot-middleware": "^2.6.0"
   },
   "dependencies": {
+    "history": "^1.13.1",
     "immutable": "^3.7.6",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
+    "react-redux": "^4.4.0",
     "react-router": "^1.0.1",
     "redux": "^3.0.5"
   }
