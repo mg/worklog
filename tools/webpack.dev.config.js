@@ -1,7 +1,7 @@
 var webpack = require('webpack');
 var path = require('path')
 
-var root = path.join(__dirname + '/../', 'dev');
+var root = path.join(__dirname + '/../', 'src');
 
 module.exports = {
   entry: [
@@ -23,13 +23,7 @@ module.exports = {
   module: {
     loaders: [
       { test: /\.(js|jsx)$/, loaders: ['babel?optional[]=runtime'], exclude: /node_modules/ },
-      { test: /\.css$/, loader: 'style-loader!css-loader' },
-      { test: /\.json$/, loader: "json-loader" },
     ],
-  },
-
-  node: {
-    __filename: true
   },
 
   plugins: [
@@ -41,4 +35,5 @@ module.exports = {
   ],
 
   devtool: 'eval-cheap-module-source-map',
+
 }
