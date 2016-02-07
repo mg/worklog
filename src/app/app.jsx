@@ -7,14 +7,15 @@ import store from './store.js'
 
 export class App extends React.Component {
   static defaultProps= {
-    initStore: store => store
+    initStore: store => store,
+    storeMiddlewares: [],
   }
 
   render() {
-    const { history, initStore }= this.props
+    const { history, initStore, storeMiddlewares }= this.props
 
     return (
-      <Provider store={initStore(store)}>
+      <Provider store={initStore(store(storeMiddlewares))}>
       	<Router history={history} routes={routes} />
       </Provider>
     )

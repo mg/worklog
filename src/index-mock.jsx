@@ -1,16 +1,25 @@
 import createHistory from 'history/lib/createHashHistory'
-import mount from './app/mount'
+import loggerMiddleware from 'redux-logger'
 
 import { actions as projectActions } from './store/project'
 console.log(projectActions)
 
-mount(createHistory(), 'app', store => {
-  store.dispatch(
-    projectActions.loadItems([
-      {name: 'Project 1'},
-      {name: 'Project 2'},
-      {name: 'Project 3'},
-    ])
-  )
-  return store
-})
+import mount from './app/mount'
+
+mount(
+  createHistory(),
+  'app',
+  store => {
+    store.dispatch(
+      projectActions.loadItems([
+        {name: 'Project 1'},
+        {name: 'Project 2'},
+        {name: 'Project 3'},
+      ])
+    )
+    return store
+  },
+  [
+    loggerMiddleware({ collapsed: (getState, action) => true }),
+  ]
+)
