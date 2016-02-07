@@ -6,7 +6,7 @@ var root = path.join(__dirname + '/../', 'src');
 module.exports = {
   entry: [
     `webpack-hot-middleware/client`,
-    `${root}/index.jsx`,
+    `${root}/index-mock.jsx`,
   ],
 
   output: {
