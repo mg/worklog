@@ -6,10 +6,16 @@ import routes from './routes.jsx'
 import store from './store.js'
 
 export class App extends React.Component {
+  static defaultProps= {
+    initStore: store => store
+  }
+
   render() {
+    const { history, initStore }= this.props
+
     return (
-      <Provider store={store}>
-      	<Router history={this.props.history} routes={routes} />
+      <Provider store={initStore(store)}>
+      	<Router history={history} routes={routes} />
       </Provider>
     )
   }
