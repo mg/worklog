@@ -1,6 +1,8 @@
 import createHistory from 'history/lib/createHashHistory'
 import loggerMiddleware from 'redux-logger'
 
+import devTools from './devtools.jsx'
+
 import { actions as projectActions } from './store/project'
 console.log(projectActions)
 
@@ -21,5 +23,6 @@ mount(
   },
   [
     loggerMiddleware({ collapsed: (getState, action) => true }),
-  ]
+  ],
+  devTools,
 )

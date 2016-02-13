@@ -12,11 +12,15 @@ export class App extends React.Component {
   }
 
   render() {
-    const { history, initStore, storeMiddlewares }= this.props
+    const { history, initStore, storeMiddlewares, devTools }= this.props
 
+    const DevTools= devTools
     return (
-      <Provider store={initStore(store(storeMiddlewares))}>
-      	<Router history={history} routes={routes} />
+      <Provider store={initStore(store(storeMiddlewares, devTools))}>
+        <div>
+          <Router history={history} routes={routes} />
+          <DevTools/>
+        </div>
       </Provider>
     )
   }
