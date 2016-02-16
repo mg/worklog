@@ -1,48 +1,61 @@
-export default function(name) {
-  const action= (prefix, payload, key) => {
-    return {
-      type: `${prefix}_${name}`,
-      payload,
-      key,
-    }
+const actionFactory= (name, action, payload, key) => {
+  return {
+    type: `${action}_${name}`,
+    payload,
+    key,
   }
+}
 
-  const initialize= () => {
+const initializeFactory= name => {
+  return () => {
     return {
       type: `INITIALIZE_${name}`,
     }
   }
+}
 
-  const loadItems= (payload) => action('LOAD_ITEMS', payload)
-  const create= (payload) => action('CREATE', payload)
-  const creating= (payload, key) => action('CREATING', payload, key)
-  const created= (payload, key) => action('CREATED', payload, key)
-  const edit= (payload) => action('EDIT', payload)
-  const save= (payload, key) => action('SAVE', payload, key)
-  const saving= (payload, key) => action('SAVING', payload, key)
-  const saved= (payload) => action('SAVED', payload)
-  const remove= (payload) => action('REMOVE', payload)
-  const removing= (payload, key) => action('REMOVING', payload, key)
-  const removed= (payload) => action('REMOVED', payload)
-
-  const error= (action, description) => {
-    return {
-      ...action,
-      isError: true,
-      description,
-    }
+const errorFactory= (action, description) => {
+  return {
+    ...action,
+    isError: true,
+    description,
   }
+}
 
-  const errorCreating= (description, key) => error(created({}, key), description)
-  const errorSaving= (description, key) => error(saved({}, key), description)
-  const errorRemoving= (description, key) => error(removed({}, key), description)
+export function internal(name) {
+  const creating= payload => actionFactory(name, 'CREATING', payload)
+  const created= (payload, key) => actionFactory(name, 'CREATED', payload, key)
+  const saving= payload => actionFactory(name, 'SAVING', payload)
+  const saved= (payload, key) => actionFactory(name, 'SAVED', payload, key)
+  const removing= payload => actionFactory(name, 'REMOVING', payload)
+  const removed= (payload, key) => actionFactory(name, 'REMOVED', payload, key)
+
+  const errorCreating= (description, key) => errorFactory(created({}, key), description)
+  const errorSaving= (description, key) => errorFactory(saved({}, key), description)
+  const errorRemoving= (description, key) => errorFactory(removed({}, key), description)
 
   return {
-    loadItems, initialize,
-    create, creating, created,
-    edit,
-    save, saving, saved,
-    remove, removing, removed,
+    creating, created,
+    saving, saved,
+    removing, removed,
     errorCreating, errorSaving, errorRemoving,
+  }
+}
+
+export default function(name) {
+  const initialize= initializeFactory(name)
+  const loadItems= payload => actionFactory(name, 'LOAD_ITEMS', payload)
+  const create= payload => actionFactory(name, 'CREATE', payload)
+  const edit= payload => actionFactory(name, 'EDIT', payload)
+  const save= (payload, key) => actionFactory(name, 'SAVE', payload, key)
+  const remove= payload => actionFactory(name, 'REMOVE', payload)
+
+  return {
+    loadItems,
+    initialize,
+    create,
+    edit,
+    save,
+    remove,
   }
 }

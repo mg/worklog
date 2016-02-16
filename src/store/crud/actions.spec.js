@@ -1,12 +1,14 @@
 import { expect } from 'chai'
 
-import actions from './actions.js'
-
+import actions, { internal } from './actions.js'
 let crud
 
 describe('crud/actions ->', () => {
   beforeEach(() => {
-    crud= actions('TEST')
+    crud= {
+      ...actions('TEST'),
+      ...internal('TEST'),
+    }
   })
 
   it('sets up initialize action', () => {

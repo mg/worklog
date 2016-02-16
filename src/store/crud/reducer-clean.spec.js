@@ -3,7 +3,7 @@ import { Map, fromJS } from 'immutable'
 
 import { run, compare } from './reducers-testutils.js'
 
-import actionsFactory from './actions.js'
+import actionsFactory, { internal as internalActionsFactory } from './actions.js'
 import reducerFactory from './reducers.js'
 
 let actions
@@ -11,7 +11,10 @@ let reducer
 
 describe('crud/reducers-clean ->', () => {
   beforeEach(() => {
-    actions= actionsFactory('TEST')
+    actions= {
+      ...actionsFactory('TEST'),
+      ...internalActionsFactory('TEST'),
+    }
     reducer= reducerFactory('TEST')
   })
 
