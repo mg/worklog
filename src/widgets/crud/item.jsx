@@ -2,7 +2,7 @@ import React from 'react'
 import Radium from 'radium'
 import PropTypes from 'react-immutable-proptypes'
 
-import { getItem } from 'store/crud/access'
+import { getItem, isRemoving } from 'store/crud/access'
 
 import Button from './button.jsx'
 
@@ -20,13 +20,20 @@ export class Item extends React.Component {
     const { item, state, style, onEdit, onRemove, children }= this.props
 
     let itemStyle= styles.item
+    let linkStyle= styles.link
+
     if(style !== undefined) {
       itemStyle= {...itemStyle, ...style}
     }
 
+    if(isRemoving(state)) {
+      console.log('removing')
+      linkStyle= {...linkStyle, ...styles.stateRemoving}
+    }
+
     return (
       <li style={itemStyle}>
-        <a href='#' onClick={::this.onClick} style={styles.link}>
+        <a href='#' onClick={::this.onClick} style={linkStyle}>
           {children(item)}
         </a>
         <Button onClick={() => onRemove(item)}>clear</Button>
@@ -40,6 +47,10 @@ export class Item extends React.Component {
     e.preventDefault()
     onSelect(item)
   }
+
+  shouldComponentUpdate(nextProps) {
+    return nextProps.state !== this.props.state
+   }
 }
 
 export default Radium(Item)
@@ -58,6 +69,10 @@ const styles= {
     textDecoration: 'none',
     color: 'black',
     marginRight: 4,
+  },
+
+  stateRemoving: {
+    color: 'red',
   }
 }
 
