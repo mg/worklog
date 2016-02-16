@@ -4,7 +4,6 @@ import loggerMiddleware from 'redux-logger'
 import devTools from './devtools.jsx'
 
 import { actions as projectActions } from './store/project'
-console.log(projectActions)
 
 import mount from './app/mount'
 
@@ -22,7 +21,10 @@ mount(
     return store
   },
   [
-    loggerMiddleware({ collapsed: (getState, action) => true }),
+    loggerMiddleware({
+      collapsed: () => true,
+      predicate: (getState, action) => !(action.type === 'EFFECT_RESOLVED' || action.type === 'EFFECT_TRIGGERED'),
+    }),
   ],
   devTools,
 )
