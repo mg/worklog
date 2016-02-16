@@ -1,8 +1,12 @@
-import { createStore, compose, applyMiddleware } from 'redux';
+import { createStore, compose, applyMiddleware } from 'redux'
+import sagaMiddleware from 'redux-saga'
+
 import state from '../store'
+import sagas from '../store/sagas'
 
 export default function(extraMiddlewares, devTools) {
   return compose(
+    applyMiddleware(sagaMiddleware(sagas)),
     ...extraMiddlewares.map(middleware => applyMiddleware(middleware)),
     devTools ? devTools.instrument() : f => f,
   )(createStore)(state)
