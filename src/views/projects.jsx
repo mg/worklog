@@ -5,7 +5,7 @@ import List from 'widgets/crud/list'
 
 export class Projects extends React.Component {
   render() {
-    const { projects }= this.props
+    const { projects, create, edit, remove }= this.props
 
     return (
       <div>
@@ -13,9 +13,9 @@ export class Projects extends React.Component {
         <List
           items={projects}
           onSelect={item => console.log('select:', item.get('name'))}
-          onEdit={item => console.log('edit:', item.get('name'))}
-          onRemove={item => console.log('remove:', item.get('name'))}
-          onCreate={() => console.log('create')}
+          onCreate={create}
+          onEdit={edit}
+          onRemove={remove}
           >
           {project => {
             return (
@@ -32,13 +32,17 @@ export class Projects extends React.Component {
 
 // connect actions and state
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { actions } from '../store/project'
 export default connect(
   state => {
     return {
       projects: state.projects
     }
   },
-  {
-    // actions
-  }
+  dispatch => bindActionCreators({
+    create: actions.create,
+    edit: actions.edit,
+    remove: actions.remove,
+  }, dispatch)
 )(Radium(Projects))
